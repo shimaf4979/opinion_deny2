@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>否定意見の表示</title>
+    <style>
+        /* 既存のスタイルは変更なし */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .opinion-container,
+        .statement-container {
+            display: flex;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .opinion-box, .statement-box {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .opinion-box:hover, .statement-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .opinion-box {
+            flex: 1;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .job-box {
+            background-color: #b7e805;
+            flex: 1;
+        }
+
+        .negative-box {
+            background-color: #f4e247;
+            flex: 2;
+            text-align: justify;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .back-button {
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }        
+
+        /* 拡大時のスタイル */
+        .expanded {
+            position: fixed;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            z-index: 1000;
+            background-color: white;
+            overflow: auto;
+        }
+
+        /* 閉じるボタンのスタイル */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HTML構造は変更なし -->
+        <div class="opinion-container">
+            <div class="opinion-box">
+                <h2>入力された意見</h2>
+                <p>{{ opinion_user }}</p>
+            </div>
+        </div>
+
+        {% for item in items %}
+        <div class="statement-container">
+            <div class="statement-box job-box">
+                <h2>ある職業の立場</h2>
+                <p>{{ item.job_value }}</p>
+            </div>
+            <div class="statement-box negative-box">
+                <h2>否定の意見</h2>
+                <p>{{ item.negative_value }}</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <button class="back-button" onclick="goBack()">戻る</button>
+    </div>        
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 否定意見ボックスの要素を取得
+            var negativeBoxes = document.querySelectorAll('.negative-box');
+        
+            // 否定意見ボックスに対してイベントリスナーを設定
+            negativeBoxes.forEach(function(box) {
+                box.addEventListener('click', function() {
+                    // 既に拡大されている場合は何もしない
+                    if (box.classList.contains('expanded')) {
+                        return;
+                    }
+        
+                    // 拡大する
+                    box.classList.add('expanded');
+        
+                    // 閉じるボタンを作成して追加
+                    var closeButton = document.createElement('button');
+                    closeButton.classList.add('close-button');
+                    closeButton.innerText = '閉じる';
+                    closeButton.onclick = function(event) {
+                        // イベントのバブリングを防ぐ
+                        event.stopPropagation();
+    
+                        // 元の大きさに戻す
+                        box.classList.remove('expanded');
+                        box.removeChild(closeButton);
+                    };
+                    box.appendChild(closeButton);
+                });
+            });
+        });
+    
+        function goBack() {
+            window.location.href = '/';
+        }
+    </script>
+    
+</body>
+</html>
